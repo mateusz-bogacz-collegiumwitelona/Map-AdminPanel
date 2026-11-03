@@ -1,16 +1,26 @@
-export type AuthSession = {
-  userId: string;
-  roles: string[];
-  accessToken: string;
-  accessTokenExpiration: string;
-  refreshToken: string;
-};
+import type { AuthSession } from "~/types/auth";
 
 const storageKey = "session";
 
+function readSession() {
+  try {
+    return JSON.parse(localStorage.getItem(storageKey) ?? "null");
+  } catch {
+    return null;
+  }
+}
+
 export function getSession(): AuthSession | null {
-  const session = localStorage.getItem(storageKey);
-  return session ? JSON.parse(session) : null;
+  const session = readSession();
+  if (
+    Array.isArray(session?.roles) &&
+    session.accessToken &&
+    session.refreshToken
+  ) {
+    return session;
+  }
+  clearSession();
+  return null;
 }
 
 export function setSession(session: AuthSession) {

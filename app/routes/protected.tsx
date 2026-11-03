@@ -1,7 +1,7 @@
-import { Outlet, redirect, useNavigate } from "react-router";
+import { Outlet, redirect } from "react-router";
 import { Button } from "~/components/ui/button";
-import { api } from "~/lib/api";
-import { clearSession, getSession, isAdmin } from "~/lib/auth";
+import { useLogoutMutation } from "~/hooks/use-auth";
+import { getSession, isAdmin } from "~/lib/auth";
 
 export function clientLoader() {
   return isAdmin(getSession()) ? null : redirect("/login");
@@ -12,20 +12,17 @@ export function HydrateFallback() {
 }
 
 export default function Protected() {
-  const navigate = useNavigate();
-
-  async function logout() {
-    await api
-      .post("/api/auth/logout", { refreshToken: getSession()?.refreshToken })
-      .catch(() => undefined);
-    clearSession();
-    navigate("/login", { replace: true });
-  }
+  const { mutate: logout, isPending, error } = useLogoutMutation();
 
   return (
     <>
-      <header className="flex justify-end border-b p-4">
-        <Button variant="outline" onClick={logout}>
+      <header className="flex items-center justify-end gap-4 border-b p-4">
+        {error && (
+          <p role="alert" className="text-sm text-destructive">
+            Logout failed: {error.message}
+          </p>
+        )}
+        <Button variant="outline" onClick={() => logout()} disabled={isPending}>
           Log out
         </Button>
       </header>

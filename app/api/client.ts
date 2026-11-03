@@ -1,19 +1,7 @@
 import axios, { isAxiosError } from "axios";
-import {
-  clearSession,
-  getSession,
-  setSession,
-  type AuthSession,
-} from "~/lib/auth";
-
-export type ApiResult<T = unknown> = {
-  isSuccess: boolean;
-  message: string;
-  errorCode?: string;
-  statusCode: number;
-  errors?: string[];
-  data: T;
-};
+import { clearSession, getSession, setSession } from "~/lib/auth";
+import type { ApiResult } from "~/types/api";
+import type { AuthSession } from "~/types/auth";
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
@@ -70,14 +58,3 @@ api.interceptors.response.use(undefined, async (error) => {
   }
   return axios.request(error.config);
 });
-
-export function getErrorMessage(error: unknown) {
-  const result = isAxiosError<ApiResult>(error)
-    ? error.response?.data
-    : undefined;
-  return (
-    result?.errors?.[0] ??
-    result?.message ??
-    "Unable to connect to the server. Please try again."
-  );
-}
