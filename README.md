@@ -82,6 +82,14 @@ Make sure to deploy the output of `npm run build`
 
 This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
 
+## Authentication
+
+The session is stored in `localStorage`, which the server cannot read. The route guard in `app/routes/protected.tsx` is a `clientLoader`, so it runs only in the browser:
+
+- A direct request to a protected route returns HTTP 200 with an empty page shell, whether or not the user is signed in. The browser then renders the page or redirects to `/login`.
+- The guard only controls what the UI shows and is not a security boundary. Every API endpoint serving admin data must enforce the access token and the `Admin` role itself.
+- Enforcing the guard on the server would require moving the session to cookies and adding a server `loader`.
+
 ---
 
 Built with ❤️ using React Router.
