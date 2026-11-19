@@ -24,8 +24,3 @@ None
 
 ## Acceptance Criteria / Testing
 
-- [ ] Kod buduje się bez ostrzeżeń
-- [ ] Wszystkie testy przechodzą lokalnie i w CI
-- [ ] Dokumentacja / Swagger zaktualizowane
-- [ ] Migracje bazy danych dodane (jeśli dotyczy)
-- [ ] Self-review wykonany

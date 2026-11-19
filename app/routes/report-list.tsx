@@ -57,9 +57,12 @@ export default function ReportList() {
           cell: (info) => {
             const row = info.row.original;
             return (
-              <span className="font-medium whitespace-nowrap text-foreground">
+              <Link
+                to={`/users/${row.reportedUserId}`}
+                className="font-medium whitespace-nowrap text-foreground underline-offset-4 hover:text-primary hover:underline"
+              >
                 {row.firstName} {row.lastName}
-              </span>
+              </Link>
             );
           },
         }),
