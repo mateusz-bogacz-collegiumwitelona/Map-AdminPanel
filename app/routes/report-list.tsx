@@ -17,6 +17,7 @@ import { useReportsList } from "~/hooks/use-reports";
 import { useDebounce } from "~/hooks/use-debounce";
 import { formatDateTime } from "~/lib/date";
 import type { ReportListItem } from "~/types/report";
+import { Link } from "react-router";
 
 const _features = tableFeatures({});
 const columnHelper = createColumnHelper<typeof _features, ReportListItem>();
