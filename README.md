@@ -1,7 +1,4 @@
-# SPCRM (Simply Poor CRM) - Frontend
-
-Frontendowa część aplikacji CRM (Customer Relationship Management) przeznaczonej dla firmy handlującej wyrobami
-stalowymi. Projekt realizowany w ramach pracy inżynierskiej.
+# MAP
 
 ## Technologie i narzędzia
 
