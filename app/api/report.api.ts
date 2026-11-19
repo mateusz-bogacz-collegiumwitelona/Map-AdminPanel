@@ -1,10 +1,17 @@
-import type { ReportListItem, ReportListParams } from "~/types/report";
+import type {
+  ReportDetail,
+  ReportListItem,
+  ReportListParams,
+} from "~/types/report";
 import type { ApiResult, PagedResult } from "~/types/api";
 import { api } from "~/api/client";
 
-export async function getReports(params: ReportListParams): Promise<PagedResult<ReportListItem>> {
+export async function getReports(
+  params: ReportListParams,
+): Promise<PagedResult<ReportListItem>> {
   const { data } = await api.get<ApiResult<PagedResult<ReportListItem>>>(
-    "/api/ban/reports", {
+    "/api/ban/reports",
+    {
       params: {
         pageNumber: params.pageNumber,
         pageSize: params.pageSize,
@@ -14,6 +21,14 @@ export async function getReports(params: ReportListParams): Promise<PagedResult<
         isShowAll: params.isShowAll,
       },
     },
+  );
+
+  return data.data;
+}
+
+export async function getReportDetail(id: string): Promise<ReportDetail> {
+  const { data } = await api.get<ApiResult<ReportDetail>>(
+    `/api/ban/report/${id}`,
   );
 
   return data.data;

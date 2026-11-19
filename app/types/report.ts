@@ -19,3 +19,20 @@ export type ReportListParams = {
   searchTerm?: string;
   isShowAll?: boolean;
 };
+
+export type ReportDetail = {
+  id: string;
+  reportedUserId: string;
+  reportedFirstName: string;
+  reportedLastName: string;
+  reporterUserId: string;
+  reporterFirstName: string;
+  reporterLastName: string;
+  reason: string;
+  status: ReportStatus;
+  resolvedByAdminId: string | null;
+  resolvedByAdminFirstName: string | null;
+  resolvedByAdminLastName: string | null;
+  resolvedAt: string | null;
+  createdAt: string;
+};

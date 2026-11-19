@@ -15,6 +15,7 @@ import { useReportsList } from "~/hooks/use-reports";
 import { useDebounce } from "~/hooks/use-debounce";
 import { QueryErrorBanner } from "~/components/error/query-error-banner";
 import type { ReportListItem, ReportStatus } from "~/types/report";
+import { STATUS_BADGE } from "~/components/reports/report-status-badge";
 
 export function meta() {
   return [{ title: "Zgłoszenia użytkowników" }];
@@ -23,33 +24,6 @@ export function meta() {
 const _features = tableFeatures({});
 const columnHelper = createColumnHelper<typeof _features, ReportListItem>();
 
-const STATUS_BADGE: Record<ReportStatus, { label: string; className: string }> =
-  {
-    Pending: {
-      label: "Oczekujące",
-      className:
-        "border border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-400",
-    },
-    Approved: {
-      label: "Zatwierdzone",
-      className:
-        "border border-destructive/30 bg-destructive/10 text-destructive",
-    },
-    Rejected: {
-      label: "Odrzucone",
-      className: "border border-border bg-muted text-muted-foreground",
-    },
-  };
-
-function formatDateTime(value: string) {
-  return new Intl.DateTimeFormat("pl-PL", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(new Date(value));
-}
 
 const columns = [
   columnHelper.accessor((row) => `${row.firstName} ${row.lastName}`, {
