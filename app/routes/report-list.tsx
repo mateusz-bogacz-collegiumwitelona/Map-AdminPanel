@@ -1,5 +1,4 @@
 import { useMemo, useState } from "react";
-import { Link } from "react-router";
 import {
   createColumnHelper,
   tableFeatures,
@@ -11,98 +10,16 @@ import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { ResponsiveDataTable } from "~/components/table/responsive-data-table";
+import { QueryErrorBanner } from "~/components/error/query-error-banner";
+import { ReportStatusBadge } from "~/components/reports/report-status-badge";
+import { ReportDetailDialog } from "~/components/reports/report-detail-dialog";
 import { useReportsList } from "~/hooks/use-reports";
 import { useDebounce } from "~/hooks/use-debounce";
-import { QueryErrorBanner } from "~/components/error/query-error-banner";
-import type { ReportListItem, ReportStatus } from "~/types/report";
-import { STATUS_BADGE } from "~/components/reports/report-status-badge";
-
-export function meta() {
-  return [{ title: "Zgłoszenia użytkowników" }];
-}
+import { formatDateTime } from "~/lib/date";
+import type { ReportListItem } from "~/types/report";
 
 const _features = tableFeatures({});
 const columnHelper = createColumnHelper<typeof _features, ReportListItem>();
-
-
-const columns = [
-  columnHelper.accessor((row) => `${row.firstName} ${row.lastName}`, {
-    id: "user",
-    header: "Zgłoszony użytkownik",
-    cell: (info) => {
-      const row = info.row.original;
-      return (
-        <div className="flex min-w-36 flex-col">
-          <span className="font-medium whitespace-nowrap text-foreground">
-            {row.firstName} {row.lastName}
-          </span>
-        </div>
-      );
-    },
-  }),
-  columnHelper.accessor("reason", {
-    header: "Powód zgłoszenia",
-    cell: (info) => (
-      <p
-        className="line-clamp-2 max-w-xs min-w-48 text-foreground/90 sm:max-w-sm lg:max-w-md"
-        title={info.getValue()}
-      >
-        {info.getValue()}
-      </p>
-    ),
-  }),
-  columnHelper.accessor("status", {
-    header: "Status",
-    cell: (info) => {
-      const status = STATUS_BADGE[info.getValue()];
-      return (
-        <span
-          className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium whitespace-nowrap ${status.className}`}
-        >
-          {status.label}
-        </span>
-      );
-    },
-  }),
-  columnHelper.accessor("createdAt", {
-    header: "Data zgłoszenia",
-    cell: (info) => (
-      <span className="whitespace-nowrap text-muted-foreground">
-        {formatDateTime(info.getValue())}
-      </span>
-    ),
-  }),
-  columnHelper.accessor("resolvedAt", {
-    header: "Data rozpatrzenia",
-    cell: (info) => {
-      const value = info.getValue();
-      if (!value) {
-        return (
-          <span className="whitespace-nowrap text-muted-foreground/70 italic">
-            Nierozpatrzone
-          </span>
-        );
-      }
-      return (
-        <span className="whitespace-nowrap text-muted-foreground">
-          {formatDateTime(value)}
-        </span>
-      );
-    },
-  }),
-  columnHelper.display({
-    id: "actions",
-    header: "Akcje",
-    cell: (info) => (
-      <Link
-        to={`/reports/${info.row.original.id}`}
-        className="font-medium whitespace-nowrap text-primary underline-offset-4 hover:underline"
-      >
-        Szczegóły
-      </Link>
-    ),
-  }),
-] as ColumnDef<typeof _features, ReportListItem, unknown>[];
 
 export default function ReportList() {
   const [pageNumber, setPageNumber] = useState(1);
@@ -112,6 +29,7 @@ export default function ReportList() {
   const [sortDescending, setSortDescending] = useState<boolean>(true);
   const [isShowAll, setIsShowAll] = useState<boolean>(false);
   const [showFilters, setShowFilters] = useState(false);
+  const [selectedReportId, setSelectedReportId] = useState<string | null>(null);
 
   const debouncedSearch = useDebounce(searchTerm, 300);
 
@@ -129,6 +47,79 @@ export default function ReportList() {
     sortDescending,
     isShowAll,
   });
+
+  const columns = useMemo(
+    () =>
+      [
+        columnHelper.accessor((row) => `${row.firstName} ${row.lastName}`, {
+          id: "user",
+          header: "Zgłoszony użytkownik",
+          cell: (info) => {
+            const row = info.row.original;
+            return (
+              <span className="font-medium whitespace-nowrap text-foreground">
+                {row.firstName} {row.lastName}
+              </span>
+            );
+          },
+        }),
+        columnHelper.accessor("reason", {
+          header: "Powód zgłoszenia",
+          cell: (info) => (
+            <p
+              className="line-clamp-2 max-w-xs min-w-48 text-foreground/90 sm:max-w-sm lg:max-w-md"
+              title={info.getValue()}
+            >
+              {info.getValue()}
+            </p>
+          ),
+        }),
+        columnHelper.accessor("status", {
+          header: "Status",
+          cell: (info) => <ReportStatusBadge status={info.getValue()} />,
+        }),
+        columnHelper.accessor("createdAt", {
+          header: "Data zgłoszenia",
+          cell: (info) => (
+            <span className="whitespace-nowrap text-muted-foreground">
+              {formatDateTime(info.getValue())}
+            </span>
+          ),
+        }),
+        columnHelper.accessor("resolvedAt", {
+          header: "Data rozpatrzenia",
+          cell: (info) => {
+            const value = info.getValue();
+            if (!value) {
+              return (
+                <span className="whitespace-nowrap text-muted-foreground/70 italic">
+                  Nierozpatrzone
+                </span>
+              );
+            }
+            return (
+              <span className="whitespace-nowrap text-muted-foreground">
+                {formatDateTime(value)}
+              </span>
+            );
+          },
+        }),
+        columnHelper.display({
+          id: "actions",
+          header: "Akcje",
+          cell: (info) => (
+            <button
+              type="button"
+              onClick={() => setSelectedReportId(info.row.original.id)}
+              className="cursor-pointer font-medium whitespace-nowrap text-primary underline-offset-4 hover:underline"
+            >
+              Szczegóły
+            </button>
+          ),
+        }),
+      ] as ColumnDef<typeof _features, ReportListItem, unknown>[],
+    [],
+  );
 
   const reports = useMemo(() => data?.items || [], [data]);
   const totalPages = data?.totalPages || 1;
@@ -293,6 +284,11 @@ export default function ReportList() {
         onPageChange={setPageNumber}
         emptyMessage="Brak zgłoszeń do wyświetlenia."
         loadingMessage="Wczytywanie zgłoszeń..."
+      />
+
+      <ReportDetailDialog
+        reportId={selectedReportId}
+        onClose={() => setSelectedReportId(null)}
       />
     </main>
   );

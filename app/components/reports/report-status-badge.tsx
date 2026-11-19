@@ -19,3 +19,19 @@ export const STATUS_BADGE: Record<
     className: "border border-border bg-muted text-muted-foreground",
   },
 };
+
+export function ReportStatusBadge({
+  status,
+}: {
+  readonly status: ReportStatus;
+}) {
+  const badge = STATUS_BADGE[status];
+
+  return (
+    <span
+      className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium whitespace-nowrap ${badge.className}`}
+    >
+      {badge.label}
+    </span>
+  );
+}
