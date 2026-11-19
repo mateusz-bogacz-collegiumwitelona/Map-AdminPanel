@@ -119,7 +119,6 @@ export function ResolveReportDialog({
             fallbackMessage="Nie udało się rozpatrzyć zgłoszenia."
           />
 
-          {/* Wybór decyzji */}
           <div className="grid gap-2">
             <Label>Decyzja</Label>
             <div className="grid grid-cols-2 gap-2">
@@ -151,7 +150,6 @@ export function ResolveReportDialog({
 
           {isBan && (
             <>
-              {/* Rodzaj bana */}
               <div className="grid gap-2">
                 <Label>Czas trwania blokady</Label>
                 <div className="grid grid-cols-2 gap-2">
@@ -180,7 +178,6 @@ export function ResolveReportDialog({
                 </div>
               </div>
 
-              {/* Kalendarz daty wygaśnięcia bana */}
               {isTemporaryBan && (
                 <div className="grid gap-2">
                   <Label htmlFor="ban-until-trigger">
@@ -221,7 +218,6 @@ export function ResolveReportDialog({
                 </div>
               )}
 
-              {/* Powód blokady */}
               <div className="grid gap-2">
                 <Label htmlFor="ban-reason">
                   Powód blokady (widoczny w powiadomieniu e-mail)
