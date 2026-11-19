@@ -20,7 +20,6 @@ export function formatDate(value: Date) {
   return dateFormatter.format(value);
 }
 
-
 export function toDotNetTimeSpanUntilEndOfDay(targetDate: Date): string {
   const endOfDay = new Date(targetDate);
   endOfDay.setHours(23, 59, 59, 0);

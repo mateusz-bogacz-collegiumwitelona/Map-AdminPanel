@@ -1,6 +1,8 @@
-import { isAxiosError } from "axios";
 import { AlertCircle } from "lucide-react";
-import type { ApiResult } from "~/types/api";
+import {
+  getApiErrorMessage,
+  getApiValidationErrors,
+} from "~/lib/error-translator";
 
 interface QueryErrorBannerProps {
   readonly error: unknown;
@@ -15,21 +17,25 @@ export function QueryErrorBanner({
 }: QueryErrorBannerProps) {
   if (!error) return null;
 
-  let message = fallbackMessage;
-
-  if (isAxiosError<ApiResult>(error)) {
-    message = error.response?.data?.message || error.message || fallbackMessage;
-  } else if (error instanceof Error) {
-    message = error.message;
-  }
+  const message = getApiErrorMessage(error, fallbackMessage);
+  const validationErrors = getApiValidationErrors(error);
 
   return (
     <div
       role="alert"
-      className={`flex items-center gap-3 rounded-lg border border-destructive/40 bg-destructive/10 p-4 text-sm text-destructive ${className}`}
+      className={`flex items-start gap-3 rounded-lg border border-destructive/40 bg-destructive/10 p-4 text-sm text-destructive ${className}`}
     >
-      <AlertCircle className="h-4 w-4 shrink-0" />
-      <span>{message}</span>
+      <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+      <div className="space-y-1">
+        <p>{message}</p>
+        {validationErrors.length > 0 && (
+          <ul className="list-disc pl-5 text-xs">
+            {validationErrors.map((err) => (
+              <li key={err}>{err}</li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   );
 }

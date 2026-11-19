@@ -1,9 +1,9 @@
 import { useMemo, useState } from "react";
 import {
+  type ColumnDef,
   createColumnHelper,
   tableFeatures,
   useTable,
-  type ColumnDef,
 } from "@tanstack/react-table";
 import { ArrowDownWideNarrow, ArrowUpNarrowWide, Filter } from "lucide-react";
 import { Button } from "~/components/ui/button";
