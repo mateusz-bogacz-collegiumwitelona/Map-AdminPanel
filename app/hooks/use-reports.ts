@@ -1,6 +1,11 @@
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { getReportDetail, getReports } from "~/api/report.api";
-import type { ReportListParams } from "~/types/report";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { getReportDetail, getReports, resolveReport } from "~/api/report.api";
+import type { ReportListParams, ResolveReportPayload } from "~/types/report";
 
 export const reportKeys = {
   all: ["reports"] as const,
@@ -22,5 +27,19 @@ export function useReportDetail(reportId: string | null) {
     queryKey: reportKeys.detail(reportId ?? ""),
     queryFn: () => getReportDetail(reportId!),
     enabled: Boolean(reportId),
+  });
+}
+
+export function useResolveReportMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (payload: ResolveReportPayload) => resolveReport(payload),
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({ queryKey: reportKeys.all });
+      queryClient.invalidateQueries({
+        queryKey: reportKeys.detail(variables.id),
+      });
+    },
   });
 }

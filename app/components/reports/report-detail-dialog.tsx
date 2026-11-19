@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import {
@@ -9,6 +10,7 @@ import {
 } from "~/components/ui/dialog";
 import { QueryErrorBanner } from "~/components/error/query-error-banner";
 import { ReportStatusBadge } from "~/components/reports/report-status-badge";
+import { ResolveReportDialog } from "~/components/reports/resolve-report-dialog";
 import { useReportDetail } from "~/hooks/use-reports";
 import { formatDateTime } from "~/lib/date";
 import type { ReportDetail } from "~/types/report";
@@ -124,31 +126,58 @@ export function ReportDetailDialog({
   reportId,
   onClose,
 }: ReportDetailDialogProps) {
+  const [resolveOpen, setResolveOpen] = useState(false);
   const { data, isLoading, error } = useReportDetail(reportId);
 
+  const isPendingReport = data?.status === "Pending";
+
+  function handleCloseAll() {
+    setResolveOpen(false);
+    onClose();
+  }
+
   return (
-    <Dialog
-      open={Boolean(reportId)}
-      onOpenChange={(open) => {
-        if (!open) onClose();
-      }}
-    >
-      <DialogContent className="sm:max-w-lg">
-        <DialogHeader>
-          <div className="flex items-center gap-3 pr-6">
-            <DialogTitle>Szczegóły zgłoszenia</DialogTitle>
-            {data && <ReportStatusBadge status={data.status} />}
-          </div>
-        </DialogHeader>
+    <>
+      <Dialog
+        open={Boolean(reportId)}
+        onOpenChange={(open) => {
+          if (!open) handleCloseAll();
+        }}
+      >
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <div className="flex items-center gap-3 pr-6">
+              <DialogTitle>Szczegóły zgłoszenia</DialogTitle>
+              {data && <ReportStatusBadge status={data.status} />}
+            </div>
+          </DialogHeader>
 
-        {renderReportContent(isLoading, error, data)}
+          {renderReportContent(isLoading, error, data)}
 
-        <DialogFooter>
-          <Button type="button" variant="outline" onClick={onClose}>
-            Zamknij
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={handleCloseAll}>
+              Zamknij
+            </Button>
+            {isPendingReport && (
+              <Button type="button" onClick={() => setResolveOpen(true)}>
+                Rozpatrz zgłoszenie
+              </Button>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {data && isPendingReport && (
+        <ResolveReportDialog
+          key={data.id}
+          reportId={data.id}
+          reportedUserName={`${data.reportedFirstName} ${data.reportedLastName}`}
+          defaultReason={data.reason}
+          open={resolveOpen}
+          onOpenChange={setResolveOpen}
+          onResolved={handleCloseAll}
+        />
+      )}
+    </>
   );
 }

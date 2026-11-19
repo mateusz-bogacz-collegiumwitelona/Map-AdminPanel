@@ -36,3 +36,10 @@ export type ReportDetail = {
   resolvedAt: string | null;
   createdAt: string;
 };
+
+export type ResolveReportPayload = {
+  id: string;
+  isBanned: boolean;
+  duration: string | null;
+  reason: string | null;
+};

@@ -2,6 +2,7 @@ import type {
   ReportDetail,
   ReportListItem,
   ReportListParams,
+  ResolveReportPayload,
 } from "~/types/report";
 import type { ApiResult, PagedResult } from "~/types/api";
 import { api } from "~/api/client";
@@ -32,4 +33,10 @@ export async function getReportDetail(id: string): Promise<ReportDetail> {
   );
 
   return data.data;
+}
+
+export async function resolveReport(
+  payload: ResolveReportPayload,
+): Promise<void> {
+  await api.post<ApiResult>("/api/ban/report/resolve", payload);
 }
