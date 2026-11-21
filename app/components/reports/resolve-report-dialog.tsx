@@ -24,11 +24,11 @@ import {
   MAX_BAN_DAYS,
   toDotNetTimeSpanUntilEndOfDay,
 } from "~/lib/date";
+import { pl } from "react-day-picker/locale";
 
 interface ResolveReportDialogProps {
   readonly reportId: string;
   readonly reportedUserName: string;
-  readonly defaultReason: string;
   readonly open: boolean;
   readonly onOpenChange: (open: boolean) => void;
   readonly onResolved: () => void;
@@ -40,7 +40,6 @@ type BanDurationType = "temporary" | "permanent";
 export function ResolveReportDialog({
   reportId,
   reportedUserName,
-  defaultReason,
   open,
   onOpenChange,
   onResolved,
@@ -53,7 +52,7 @@ export function ResolveReportDialog({
     getDateInDays(7),
   );
 
-  const [reason, setReason] = useState(defaultReason);
+  const [reason, setReason] = useState("");
   const [calendarOpen, setCalendarOpen] = useState(false);
 
   const { mutate, isPending, error, reset } = useResolveReportMutation();
@@ -205,6 +204,7 @@ export function ResolveReportDialog({
                     <PopoverContent className="w-auto p-0" align="start">
                       <Calendar
                         mode="single"
+                        locale={pl}
                         selected={banUntilDate}
                         onSelect={(date) => {
                           setBanUntilDate(date);

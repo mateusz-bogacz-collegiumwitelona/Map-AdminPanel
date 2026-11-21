@@ -39,7 +39,7 @@ Aby uruchomić projekt lokalnie, upewnij się, że masz zainstalowane:
    cp .env.example .env
    ```
 
-   Twój plik .env powinien zawierać m.in.: VITE_API_URL=http://localhost:8080
+   Twój plik .env powinien zawierać m.in.: VITE_API_BASE_URL=http://localhost:8080
 
 3. Uruchomienie serwera deweloperskiego
    Wystartuj aplikację w trybie deweloperskim (z obsługą HMR):

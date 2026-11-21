@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 import { ArrowRight, Clock, Flag, ShieldAlert } from "lucide-react";
-import { Button, buttonVariants } from "~/components/ui/button";
+import { buttonVariants } from "~/components/ui/button";
 import { useReportsList } from "~/hooks/use-reports";
 import { QueryErrorBanner } from "~/components/error/query-error-banner";
 import { formatDateTime } from "~/lib/date";
