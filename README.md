@@ -1,95 +1,58 @@
-# Welcome to React Router!
+# MAP
 
-A modern, production-ready template for building full-stack React applications using React Router.
+## Technologie i narzędzia
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
+Projekt wykorzystuje nowoczesny ekosystem frontendowy, nastawiony na wydajność, bezpieczeństwo typów i świetne Developer
+Experience (DX):
 
-## Features
+- **React & React Router** – Główne biblioteki do budowy interfejsu i zarządzania routingiem (wsparcie dla SSR i Data
+  Loadingu)
+- **Vite** – Błyskawiczne narzędzie budujące (Bundler) i serwer deweloperski z Hot Module Replacement (HMR)
+- **TypeScript** – Statyczne typowanie zapewniające bezpieczeństwo kodu
+- **Tailwind CSS v4** – Utility-first CSS framework do szybkiego stylowania aplikacji
+- **Shadcn UI & Radix UI** – Dostępne, bezgłowe (headless) i w pełni modyfikowalne komponenty interfejsu użytkownika
+- **Axios** – Klient HTTP do komunikacji z API backendu
+- **Lucide React** – Nowoczesna biblioteka ikon
+- **Prettier** – Automatyczny formater dbający o absolutną spójność wizualną bazy kodowej.
 
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
+## Wymagania wstępne
 
-## Getting Started
+Aby uruchomić projekt lokalnie, upewnij się, że masz zainstalowane:
 
-### Installation
+- [Node.js](https://nodejs.org/) (zalecana wersja LTS, np. v20 lub v22)
+- Menedżer pakietów `npm` (zainstalowany domyślnie z Node.js)
 
-Install the dependencies:
+## Uruchomienie projektu lokalnie
 
-```bash
-npm install
-```
+1. **Instalacja zależności**
+   Pobierz wszystkie wymagane pakiety definiowane w `package.json`:
 
-### Development
+   ```
+   npm install
+   ```
 
-Start the development server with HMR:
+2. Konfiguracja zmiennych środowiskowych
+   Skopiuj zawartość pliku .env.example i stwórz nowy plik .env. Upewnij się, że adres API jest poprawny (domyślnie
+   wskazuje na port 8080, gdzie powinien działać lokalny backend):
 
-```bash
-npm run dev
-```
+   ```
+   cp .env.example .env
+   ```
 
-Your application will be available at `http://localhost:5173`.
+   Twój plik .env powinien zawierać m.in.: VITE_API_BASE_URL=http://localhost:8080
 
-## Building for Production
+3. Uruchomienie serwera deweloperskiego
+   Wystartuj aplikację w trybie deweloperskim (z obsługą HMR):
 
-Create a production build:
+   ```
+   npm run dev
+   ```
 
-```bash
-npm run build
-```
+   Aplikacja będzie dostępna w przeglądarce pod adresem: http://localhost:5173
 
-## Deployment
+### Przydatne komendy
 
-### Docker Deployment
-
-To build and run using Docker:
-
-```bash
-docker build -t my-app .
-
-# Run the container
-docker run -p 3000:3000 my-app
-```
-
-The containerized application can be deployed to any platform that supports Docker, including:
-
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
-
-### DIY Deployment
-
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-```
-├── package.json
-├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
-```
-
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
-
-## Authentication
-
-The session is stored in `localStorage`, which the server cannot read. The route guard in `app/routes/protected.tsx` is a `clientLoader`, so it runs only in the browser:
-
-- A direct request to a protected route returns HTTP 200 with an empty page shell, whether or not the user is signed in. The browser then renders the page or redirects to `/login`.
-- The guard only controls what the UI shows and is not a security boundary. Every API endpoint serving admin data must enforce the access token and the `Admin` role itself.
-- Enforcing the guard on the server would require moving the session to cookies and adding a server `loader`.
-
----
-
-Built with ❤️ using React Router.
+| Komenda                  | Opis                                                                    |
+|--------------------------|-------------------------------------------------------------------------|
+| `npx prettier --write .` | Automatyczne formatowanie stylu i układu kodu we wszystkich plikach.    |
+| `npx tsc --noEmit`       | Sprawdzenie poprawności typów w całym projekcie bez generowania plików. |
