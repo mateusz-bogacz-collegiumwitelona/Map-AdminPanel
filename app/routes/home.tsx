@@ -153,12 +153,6 @@ export default function Home() {
                   <span className="text-xs whitespace-nowrap text-muted-foreground">
                     {formatDateTime(report.createdAt)}
                   </span>
-                  <Link
-                    to={`/reports/${report.id}`}
-                    className="text-sm font-medium whitespace-nowrap text-primary underline-offset-4 hover:underline"
-                  >
-                    Szczegóły
-                  </Link>
                 </div>
               </li>
             ))}

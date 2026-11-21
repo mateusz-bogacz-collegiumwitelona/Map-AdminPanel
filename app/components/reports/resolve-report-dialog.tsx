@@ -18,7 +18,12 @@ import {
 } from "~/components/ui/popover";
 import { QueryErrorBanner } from "~/components/error/query-error-banner";
 import { useResolveReportMutation } from "~/hooks/use-reports";
-import { formatDate, toDotNetTimeSpanUntilEndOfDay } from "~/lib/date";
+import {
+  formatDate,
+  getDateInDays,
+  MAX_BAN_DAYS,
+  toDotNetTimeSpanUntilEndOfDay,
+} from "~/lib/date";
 
 interface ResolveReportDialogProps {
   readonly reportId: string;
@@ -32,13 +37,6 @@ interface ResolveReportDialogProps {
 type DecisionType = "reject" | "ban";
 type BanDurationType = "temporary" | "permanent";
 
-function getTomorrow(): Date {
-  const date = new Date();
-  date.setDate(date.getDate() + 1);
-  date.setHours(0, 0, 0, 0);
-  return date;
-}
-
 export function ResolveReportDialog({
   reportId,
   reportedUserName,
@@ -50,11 +48,11 @@ export function ResolveReportDialog({
   const [decision, setDecision] = useState<DecisionType>("ban");
   const [durationType, setDurationType] =
     useState<BanDurationType>("temporary");
-  const [banUntilDate, setBanUntilDate] = useState<Date | undefined>(() => {
-    const inSevenDays = new Date();
-    inSevenDays.setDate(inSevenDays.getDate() + 7);
-    return inSevenDays;
-  });
+
+  const [banUntilDate, setBanUntilDate] = useState<Date | undefined>(() =>
+    getDateInDays(7),
+  );
+
   const [reason, setReason] = useState(defaultReason);
   const [calendarOpen, setCalendarOpen] = useState(false);
 
@@ -97,7 +95,8 @@ export function ResolveReportDialog({
     );
   }
 
-  const tomorrow = getTomorrow();
+  const tomorrow = getDateInDays(1);
+  const maxBanDate = getDateInDays(MAX_BAN_DAYS);
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -211,7 +210,9 @@ export function ResolveReportDialog({
                           setBanUntilDate(date);
                           setCalendarOpen(false);
                         }}
-                        disabled={(date) => date < tomorrow}
+                        disabled={(date) =>
+                          date < tomorrow || date > maxBanDate
+                        }
                       />
                     </PopoverContent>
                   </Popover>

@@ -174,8 +174,6 @@ export default function ReportList() {
           >
             <option value="createdAt">Data zgłoszenia</option>
             <option value="resolvedAt">Data rozpatrzenia</option>
-            <option value="firstName">Imię</option>
-            <option value="lastName">Nazwisko</option>
             <option value="status">Status</option>
           </select>
 

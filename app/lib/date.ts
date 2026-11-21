@@ -1,3 +1,7 @@
+// API rejects bans longer than 365 days, since a ban lasts until 23:59:59 on the chosen day,
+// the last valid date is today + 364 days.
+export const MAX_BAN_DAYS = 364;
+
 const dateTimeFormatter = new Intl.DateTimeFormat("pl-PL", {
   day: "2-digit",
   month: "2-digit",
@@ -34,4 +38,11 @@ export function toDotNetTimeSpanUntilEndOfDay(targetDate: Date): string {
 
   const pad = (n: number) => String(n).padStart(2, "0");
   return `${days}.${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+}
+
+export  function getDateInDays(days: number) : Date {
+  const date = new Date();
+  date.setDate(date.getDate() + days);
+  date.setHours(0, 0, 0, 0);
+  return date;
 }
