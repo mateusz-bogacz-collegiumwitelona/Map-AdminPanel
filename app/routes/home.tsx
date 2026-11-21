@@ -1,24 +1,21 @@
 import { Link } from "react-router";
 import { ArrowRight, Clock, Flag, ShieldAlert } from "lucide-react";
-import { Button } from "~/components/ui/button";
+import { Button, buttonVariants } from "~/components/ui/button";
 import { useReportsList } from "~/hooks/use-reports";
+import { QueryErrorBanner } from "~/components/error/query-error-banner";
+import { formatDateTime } from "~/lib/date";
 
 export function meta() {
   return [{ title: "Panel główny | Panel administratora" }];
 }
 
-function formatDateTime(value: string) {
-  return new Intl.DateTimeFormat("pl-PL", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(new Date(value));
-}
-
 export default function Home() {
-  const { data: pendingData, isLoading: isPendingLoading } = useReportsList({
+  const {
+    data: pendingData,
+    isLoading: isPendingLoading,
+    isError: isPendingError,
+    error: pendingError,
+  } = useReportsList({
     pageNumber: 1,
     pageSize: 5,
     sortBy: "createdAt",
@@ -26,11 +23,18 @@ export default function Home() {
     isShowAll: false,
   });
 
-  const { data: allData, isLoading: isAllLoading } = useReportsList({
+  const {
+    data: allData,
+    isLoading: isAllLoading,
+    isError: isAllError,
+    error: allError,
+  } = useReportsList({
     pageNumber: 1,
     pageSize: 1,
     isShowAll: true,
   });
+
+  const queryError = pendingError ?? allError;
 
   const pendingCount = pendingData?.totalCount ?? 0;
   const totalCount = allData?.totalCount ?? 0;
@@ -49,13 +53,19 @@ export default function Home() {
           </p>
         </div>
 
-        <Link to="/reports">
-          <Button className="w-full gap-2 sm:w-auto">
-            <span>Przejdź do zgłoszeń</span>
-            <ArrowRight className="h-4 w-4" />
-          </Button>
+        <Link
+          to="/reports"
+          className={buttonVariants({ className: "w-full gap-2 sm:w-auto" })}
+        >
+          <span>Przejdź do zgłoszeń</span>
+          <ArrowRight className="h-4 w-4" />
         </Link>
       </div>
+
+      <QueryErrorBanner
+        error={queryError}
+        fallbackMessage="Nie udało się pobrać danych panelu głównego."
+      />
 
       <section
         aria-label="Podsumowanie zgłoszeń"
@@ -69,7 +79,7 @@ export default function Home() {
             <Clock className="h-4 w-4 text-amber-600 dark:text-amber-400" />
           </div>
           <p className="mt-3 text-3xl font-semibold tracking-tight">
-            {isPendingLoading ? "—" : pendingCount}
+            {isPendingLoading || isPendingError ? "—" : pendingCount}
           </p>
           <p className="mt-1 text-xs text-muted-foreground">
             Wymagają weryfikacji administratora
@@ -84,7 +94,9 @@ export default function Home() {
             <ShieldAlert className="h-4 w-4 text-muted-foreground" />
           </div>
           <p className="mt-3 text-3xl font-semibold tracking-tight">
-            {isPendingLoading || isAllLoading ? "—" : resolvedCount}
+            {isPendingLoading || isAllLoading || isPendingError || isAllError
+              ? "—"
+              : resolvedCount}
           </p>
           <p className="mt-1 text-xs text-muted-foreground">
             Zatwierdzone lub odrzucone
@@ -99,7 +111,7 @@ export default function Home() {
             <Flag className="h-4 w-4 text-primary" />
           </div>
           <p className="mt-3 text-3xl font-semibold tracking-tight">
-            {isAllLoading ? "—" : totalCount}
+            {isAllLoading || isAllError ? "—" : totalCount}
           </p>
           <p className="mt-1 text-xs text-muted-foreground">
             Łączna liczba w historii systemu
@@ -128,6 +140,10 @@ export default function Home() {
         {isPendingLoading ? (
           <div className="p-8 text-center text-sm text-muted-foreground">
             Wczytywanie ostatnich zgłoszeń...
+          </div>
+        ) : isPendingError ? (
+          <div className="p-8 text-center text-sm text-muted-foreground">
+            Nie udało się wczytać oczekujących zgłoszeń.
           </div>
         ) : recentPending.length === 0 ? (
           <div className="p-8 text-center text-sm text-muted-foreground">
