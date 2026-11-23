@@ -53,6 +53,6 @@ Aby uruchomić projekt lokalnie, upewnij się, że masz zainstalowane:
 ### Przydatne komendy
 
 | Komenda                  | Opis                                                                    |
-|--------------------------|-------------------------------------------------------------------------|
+| ------------------------ | ----------------------------------------------------------------------- |
 | `npx prettier --write .` | Automatyczne formatowanie stylu i układu kodu we wszystkich plikach.    |
 | `npx tsc --noEmit`       | Sprawdzenie poprawności typów w całym projekcie bez generowania plików. |

@@ -40,7 +40,7 @@ export function toDotNetTimeSpanUntilEndOfDay(targetDate: Date): string {
   return `${days}.${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
 }
 
-export  function getDateInDays(days: number) : Date {
+export function getDateInDays(days: number): Date {
   const date = new Date();
   date.setDate(date.getDate() + days);
   date.setHours(0, 0, 0, 0);

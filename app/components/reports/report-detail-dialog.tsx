@@ -172,7 +172,6 @@ export function ReportDetailDialog({
           key={data.id}
           reportId={data.id}
           reportedUserName={`${data.reportedFirstName} ${data.reportedLastName}`}
-          defaultReason={data.reason}
           open={resolveOpen}
           onOpenChange={setResolveOpen}
           onResolved={handleCloseAll}
